@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\riverli.blog.infrastructure.shared\RiverLi.Blog.Infrastructure.Shared.csproj" />
+    <ProjectReference Include="..\riverli.blog.services.file.Domain\riverli.blog.services.file.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="14.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.12" />
+    <PackageReference Include="RiverLi.DDD.Core" Version="1.0.8" />
+  </ItemGroup>
+
+</Project>

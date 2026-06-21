@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+
+# Reasonix
+.reasonix/
+
+# Build artifacts
+**/obj/
+**/bin/
