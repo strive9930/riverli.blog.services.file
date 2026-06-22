@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using riverli.blog.services.file.Application.Interfaces;
 using riverli.blog.services.file.Domain.Entities;
 using riverli.blog.services.file.Infrastructure.Data;
+using RiverLi.DDD.Core.Domain.Repositories;
 
 namespace riverli.blog.services.file.Infrastructure.Repositories;
 

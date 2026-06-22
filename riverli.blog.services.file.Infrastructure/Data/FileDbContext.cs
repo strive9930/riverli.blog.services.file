@@ -1,7 +1,9 @@
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using RiverLi.Blog.Infrastructure.Shared.Auth;
 using RiverLi.Blog.Infrastructure.Shared.Data;
 using riverli.blog.services.file.Domain.Entities;
+using RiverLi.DDD.Core.Application.Common.Interfaces;
 
 namespace riverli.blog.services.file.Infrastructure.Data;
 
@@ -10,14 +12,14 @@ namespace riverli.blog.services.file.Infrastructure.Data;
 /// </summary>
 public class FileDbContext : RiverDbContext
 {
+    public FileDbContext(DbContextOptions options, IMediator mediator, ICurrentUser currentUser) : base(options, mediator, currentUser)
+    {
+    }
+
     public DbSet<FileItem> Files => Set<FileItem>();
     public DbSet<FileDirectory> Directories => Set<FileDirectory>();
     public DbSet<FileTag> Tags => Set<FileTag>();
-
-    public FileDbContext(DbContextOptions<FileDbContext> options, ICurrentUser currentUser)
-        : base(options, currentUser)
-    {
-    }
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

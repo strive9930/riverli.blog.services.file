@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using RiverLi.Blog.Infrastructure.Shared.Auth;
 using RiverLi.DDD.Core.Application.Common.Models;
 using riverli.blog.services.file.Application.Interfaces;
+using RiverLi.DDD.Core.Application.Common.Interfaces;
 
 namespace riverli.blog.services.file.Application.Features.Files.Commands;
 

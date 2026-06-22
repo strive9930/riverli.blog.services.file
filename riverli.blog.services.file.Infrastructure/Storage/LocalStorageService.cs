@@ -88,6 +88,7 @@ public class LocalStorageService : IStorageService
                 File.Delete(fullPath);
                 _logger.LogInformation("文件已删除: {StoragePath}", storagePath);
             }
+
             return Task.FromResult(true);
         }
         catch (Exception ex)
@@ -132,7 +133,8 @@ public class LocalStorageService : IStorageService
             await using var destStream = new FileStream(thumbFullPath, FileMode.Create, FileAccess.Write);
             await sourceStream.CopyToAsync(destStream, cancellationToken);
 
-            return StorageResult.Ok(thumbName, thumbRelativePath, GetFileUrl(thumbRelativePath), new FileInfo(thumbFullPath).Length);
+            return StorageResult.Ok(thumbName, thumbRelativePath, GetFileUrl(thumbRelativePath),
+                new FileInfo(thumbFullPath).Length);
         }
         catch (Exception ex)
         {
@@ -144,15 +146,16 @@ public class LocalStorageService : IStorageService
     /// <summary>
     /// 本地存储配置
     /// </summary>
-public class LocalStorageOptions
-{
-    /// <summary>
-    /// 文件存储根路径
-    /// </summary>
-    public string RootPath { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+    public class LocalStorageOptions
+    {
+        /// <summary>
+        /// 文件存储根路径
+        /// </summary>
+        public string RootPath { get; set; } = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
 
-    /// <summary>
-    /// HTTP 请求路径前缀
-    /// </summary>
-    public string RequestPath { get; set; } = "uploads";
+        /// <summary>
+        /// HTTP 请求路径前缀
+        /// </summary>
+        public string RequestPath { get; set; } = "uploads";
+    }
 }

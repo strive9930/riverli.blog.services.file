@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using RiverLi.Blog.Infrastructure.Shared.Extensions;
+using RiverLi.Blog.Infrastructure.Shared.OpenApi;
 using RiverLi.Blog.Infrastructure.Shared.Repositories;
 using RiverLi.Blog.Infrastructure.Shared.Security;
 using riverli.blog.services.file.Application.Interfaces;
@@ -83,7 +84,7 @@ builder.Services.AddScoped<IFileTagRepository, FileTagRepository>();
 builder.Services.AddScoped(typeof(IRepository<,>), typeof(EfRepository<,>));
 
 // 存储服务
-builder.Services.Configure<LocalStorageOptions>(builder.Configuration.GetSection("Storage"));
+builder.Services.Configure<LocalStorageService.LocalStorageOptions>(builder.Configuration.GetSection("Storage"));
 builder.Services.AddScoped<IStorageService, LocalStorageService>();
 
 // 全局授权过滤器

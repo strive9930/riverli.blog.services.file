@@ -62,7 +62,7 @@ public class GetFileListHandler : IRequestHandler<GetFileListQuery, PagedResult<
 
         return new PagedResult<FileDto>
         {
-            Items = dtos,
+            Data = dtos,
             TotalCount = totalCount,
             PageIndex = request.PageIndex,
             PageSize = request.PageSize
