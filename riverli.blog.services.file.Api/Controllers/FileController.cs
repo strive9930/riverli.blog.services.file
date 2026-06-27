@@ -1,10 +1,15 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RiverLi.Blog.Infrastructure.Shared.Controllers;
+using RiverLi.Blog.Infrastructure.Shared.Auth;
 using RiverLi.DDD.Core.Application.Common.Models;
+using riverli.blog.services.file.Application.Constants;
 using riverli.blog.services.file.Application.DTOs;
 using riverli.blog.services.file.Application.Features.Files.Commands;
 using riverli.blog.services.file.Application.Features.Files.Queries;
+using riverli.blog.services.file.Application.Interfaces;
+using riverli.blog.services.file.Domain.Entities;
+using RiverLi.DDD.Core.Application.Common.Interfaces;
 
 namespace riverli.blog.services.file.Api.Controllers;
 
@@ -12,9 +17,54 @@ namespace riverli.blog.services.file.Api.Controllers;
 /// 文件管理接口
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/file/[controller]")]
 public class FileController : BaseApiController
 {
+    /// <summary>
+    /// 上传图片（返回 URL，兼容旧 Blog 媒体接口）
+    /// </summary>
+    [HttpPost("upload-image")]
+    [RequestSizeLimit(5 * 1024 * 1024)]
+    public async Task<IActionResult> UploadImage(IFormFile file)
+    {
+        if (file is null || file.Length == 0)
+            return BadRequest(ApiResult.FailResult("请选择要上传的文件", 400));
+
+        var storageService = HttpContext.RequestServices.GetRequiredService<IStorageService>();
+        var fileRepository = HttpContext.RequestServices.GetRequiredService<IFileRepository>();
+        var currentUser = HttpContext.RequestServices.GetRequiredService<ICurrentUser>();
+
+        await using var stream = file.OpenReadStream();
+        var storageResult = await storageService.UploadAsync(
+            file.FileName, file.ContentType, stream, FileConstants.ImageBucket);
+
+        if (!storageResult.Success)
+            return StatusCode(500, ApiResult.FailResult($"上传失败: {storageResult.ErrorMessage}", 500));
+
+        var extension = Path.GetExtension(file.FileName).TrimStart('.').ToLowerInvariant();
+        var fileItem = new FileItem
+        {
+            FileName = file.FileName,
+            StoredName = storageResult.StoredName,
+            Extension = extension,
+            ContentType = file.ContentType,
+            FileSize = storageResult.FileSize,
+            Bucket = FileConstants.ImageBucket,
+            StoragePath = storageResult.StoragePath,
+            Url = storageResult.Url,
+            ThumbnailUrl = storageResult.ThumbnailUrl,
+            Width = storageResult.Width,
+            Height = storageResult.Height,
+            IsPublic = true,
+            Creator = currentUser.Id
+        };
+
+        await fileRepository.AddAsync(fileItem);
+        await fileRepository.UnitOfWork.SaveEntitiesAsync();
+
+        return Ok(storageResult.Url);
+    }
+
     /// <summary>
     /// 上传文件
     /// </summary>

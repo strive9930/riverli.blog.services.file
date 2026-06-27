@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using RiverLi.Blog.Infrastructure.Shared.Consul;
 using RiverLi.Blog.Infrastructure.Shared.Extensions;
 using RiverLi.Blog.Infrastructure.Shared.OpenApi;
 using RiverLi.Blog.Infrastructure.Shared.Repositories;
@@ -9,9 +10,13 @@ using riverli.blog.services.file.Infrastructure.Data;
 using riverli.blog.services.file.Infrastructure.Repositories;
 using riverli.blog.services.file.Infrastructure.Storage;
 using RiverLi.DDD.Core.Domain.Repositories;
-using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ==========================================
+// 0. 从 Consul 配置中心拉取远程配置（覆盖本地 appsettings）
+// ==========================================
+builder.Configuration.AddConsulConfiguration(builder.Configuration.GetSection("Consul"));
 
 // ==========================================
 // 1. 【共享基建注入】
@@ -99,22 +104,11 @@ builder.Services.AddMemoryCache();
 
 // OpenAPI 自报告
 builder.Services.AddApiSelfReporting();
-builder.Services.AddMicroserviceOpenApi();
 
 // ==========================================
 // 3. 【中间件管道配置】
 // ==========================================
 var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference(options =>
-    {
-        options.WithTitle("RiverLi Blog - 文件管理微服务")
-            .WithTheme(ScalarTheme.DeepSpace);
-    });
-}
 
 app.UseInfrastructureSharedMiddlewares();
 await DbSeeder.SeedAsync(app.Services);
