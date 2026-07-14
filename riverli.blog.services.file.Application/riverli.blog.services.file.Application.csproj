@@ -7,14 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\riverli.blog.infrastructure.shared\RiverLi.Blog.Infrastructure.Shared.csproj" />
+    <!-- ⚠️ 原为 ProjectReference(..\..\riverli.blog.infrastructure.shared)，为兼容 Docker 构建改为 NuGet 包引用 -->
+    <PackageReference Include="RiverLi.Blog.Infrastructure.Shared" Version="1.0.3" />
+    <!-- 以下为解决方案内项目引用，Docker 构建时需一并 COPY 其 .csproj -->
     <ProjectReference Include="..\riverli.blog.services.file.Domain\riverli.blog.services.file.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="14.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.12" />
-    <PackageReference Include="RiverLi.DDD.Core" Version="1.0.8" />
+    <PackageReference Include="RiverLi.DDD.Core" Version="1.0.9" />
   </ItemGroup>
 
 </Project>
